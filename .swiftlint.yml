@@ -1,0 +1,5 @@
+whitelist_rules:
+  - todo
+  - leading_whitespace
+included:
+  - SimpleAVPlayer
