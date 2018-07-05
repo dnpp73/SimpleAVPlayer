@@ -1,8 +1,8 @@
 import Foundation
 import AVFoundation
 
-@objc public protocol PlayerControllable: class {
-    weak var delegate: PlayerControlDelegate? { get set }
+public protocol PlayerControllable: class {
+    var delegate: PlayerControlDelegate? { get set }
     
     var playerItem: AVPlayerItem? { get set }
     
@@ -23,20 +23,20 @@ import AVFoundation
     var volume: Float { get set }
 }
 
-@objc public protocol PlayerControlDelegate: class {
-    @objc optional func playerItemDidChangeStatus(_ player: PlayerControllable, playerItem: AVPlayerItem)
-    @objc optional func playerItemDidChangeLoadedTimeRanges(_ player: PlayerControllable, playerItem: AVPlayerItem)
+public protocol PlayerControlDelegate: class {
+    func playerItemDidChangeStatus(_ player: PlayerControllable, playerItem: AVPlayerItem)
+    func playerItemDidChangeLoadedTimeRanges(_ player: PlayerControllable, playerItem: AVPlayerItem)
     
-    @objc optional func playerItemStalled(_ player: PlayerControllable, playerItem: AVPlayerItem)
-    @objc optional func playerItemFailedToPlayToEnd(_ player: PlayerControllable, playerItem: AVPlayerItem)
-    @objc optional func playerItemDidPlayToEndTime(_ player: PlayerControllable, playerItem: AVPlayerItem)
+    func playerItemStalled(_ player: PlayerControllable, playerItem: AVPlayerItem)
+    func playerItemFailedToPlayToEnd(_ player: PlayerControllable, playerItem: AVPlayerItem)
+    func playerItemDidPlayToEndTime(_ player: PlayerControllable, playerItem: AVPlayerItem)
     
-    @objc optional func playerDidFinishSeeking(_ player: PlayerControllable)
-    @objc optional func playerDidFailSeeking(_ player: PlayerControllable)
+    func playerDidFinishSeeking(_ player: PlayerControllable)
+    func playerDidFailSeeking(_ player: PlayerControllable)
     
-    @objc optional func playerDidChangePlayTimePeriodic(_ player: PlayerControllable)
+    func playerDidChangePlayTimePeriodic(_ player: PlayerControllable)
     
-    @objc optional func playerDidChangeRate(_ player: PlayerControllable)
+    func playerDidChangeRate(_ player: PlayerControllable)
     
-    @objc optional func playerDidChangeVolume(_ player: PlayerControllable)
+    func playerDidChangeVolume(_ player: PlayerControllable)
 }

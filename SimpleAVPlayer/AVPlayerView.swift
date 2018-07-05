@@ -125,9 +125,9 @@ public final class AVPlayerView: UIView, PlayerControllable {
             self.isSeeking = false
             onMainThread {
                 if success {
-                    delegate.playerDidFinishSeeking?(self)
+                    delegate.playerDidFinishSeeking(self)
                 } else {
-                    delegate.playerDidFailSeeking?(self)
+                    delegate.playerDidFailSeeking(self)
                 }
             }
         }
@@ -313,11 +313,11 @@ public final class AVPlayerView: UIView, PlayerControllable {
         onMainThread {
             switch (notification.name) {
             case .AVPlayerItemPlaybackStalled:
-                delegate.playerItemStalled?(self, playerItem: currentItem)
+                delegate.playerItemStalled(self, playerItem: currentItem)
             case .AVPlayerItemFailedToPlayToEndTime:
-                delegate.playerItemFailedToPlayToEnd?(self, playerItem: currentItem)
+                delegate.playerItemFailedToPlayToEnd(self, playerItem: currentItem)
             case .AVPlayerItemDidPlayToEndTime:
-                delegate.playerItemDidPlayToEndTime?(self, playerItem: currentItem)
+                delegate.playerItemDidPlayToEndTime(self, playerItem: currentItem)
             default:
                 break
             }
@@ -326,7 +326,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
     
     private func playerDidChangePlayTimePeriodic() {
         // addPeriodicTimeObserver で指定しているので必ずメインスレッドから来る
-        delegate?.playerDidChangePlayTimePeriodic?(self)
+        delegate?.playerDidChangePlayTimePeriodic(self)
     }
     
     //MARK:-  KVO
@@ -336,9 +336,9 @@ public final class AVPlayerView: UIView, PlayerControllable {
             onMainThread {
                 switch keyPath {
                 case "rate":
-                    delegate.playerDidChangeRate?(self)
+                    delegate.playerDidChangeRate(self)
                 case "volume":
-                    delegate.playerDidChangeVolume?(self)
+                    delegate.playerDidChangeVolume(self)
                 case "externalPlaybackActive":
                     // print("[KVO Player] externalPlaybackActive")
                     break
@@ -351,12 +351,12 @@ public final class AVPlayerView: UIView, PlayerControllable {
             onMainThread {
                 switch keyPath {
                 case "status":
-                    delegate.playerItemDidChangeStatus?(self, playerItem: playerItem)
+                    delegate.playerItemDidChangeStatus(self, playerItem: playerItem)
                 case "playbackLikelyToKeepUp":
                     // print("[KVO PlayerItem] playbackLikelyToKeepUp")
                     break
                 case "loadedTimeRanges":
-                    delegate.playerItemDidChangeLoadedTimeRanges?(self, playerItem: playerItem)
+                    delegate.playerItemDidChangeLoadedTimeRanges(self, playerItem: playerItem)
                 default:
                     break
                 }
