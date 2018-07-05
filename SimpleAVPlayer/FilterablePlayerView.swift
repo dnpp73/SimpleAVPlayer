@@ -249,11 +249,12 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
     // MARK:- Notification
     
     private func setupAVPlayerItemNotifications() {
-        [
-            NSNotification.Name.AVPlayerItemDidPlayToEndTime,
-            NSNotification.Name.AVPlayerItemFailedToPlayToEndTime,
-            NSNotification.Name.AVPlayerItemPlaybackStalled
-        ].forEach { name in
+        let notifications: [Notification.Name] = [
+            .AVPlayerItemDidPlayToEndTime,
+            .AVPlayerItemFailedToPlayToEndTime,
+            .AVPlayerItemPlaybackStalled
+        ]
+        notifications.forEach { name in
             NotificationCenter.default.addObserver(self, selector: #selector(self.handle(playerItemNotification:)), name: name, object: nil)
         }
     }
@@ -264,11 +265,11 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
         }
         onMainThread {
             switch (notification.name) {
-            case NSNotification.Name.AVPlayerItemPlaybackStalled:
+            case .AVPlayerItemPlaybackStalled:
                 delegate.playerItemStalled?(self, playerItem: currentItem)
-            case NSNotification.Name.AVPlayerItemFailedToPlayToEndTime:
+            case .AVPlayerItemFailedToPlayToEndTime:
                 delegate.playerItemFailedToPlayToEnd?(self, playerItem: currentItem)
-            case NSNotification.Name.AVPlayerItemDidPlayToEndTime:
+            case .AVPlayerItemDidPlayToEndTime:
                 delegate.playerItemDidPlayToEndTime?(self, playerItem: currentItem)
             default:
                 break
