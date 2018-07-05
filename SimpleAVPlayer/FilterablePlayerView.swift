@@ -243,7 +243,7 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
             displayLink.isPaused = true
             // displayLink.frameInterval = 60 // これをやると 1 Hz になる
             return displayLink
-        }()
+        }(())
     }
     
     // MARK:- Notification
@@ -308,7 +308,7 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
                         self.image == nil,
                         let pixelBuffer: CVPixelBuffer = self.videoOutput.copyPixelBuffer(forItemTime: kCMTimeZero, itemTimeForDisplay: nil)
                     {
-                        self.image = CIImage(cvPixelBuffer: pixelBuffer).applyingOrientation(self.preferredCGImagePropertyOrientation)
+                        self.image = CIImage(cvPixelBuffer: pixelBuffer).oriented(forExifOrientation: self.preferredCGImagePropertyOrientation)
                     }
 
                     delegate.playerItemDidChangeStatus?(self, playerItem: playerItem)
@@ -374,7 +374,7 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
         // そのため、pixelBuffer からそのまま ciImage を作ると必ず横長の画像が生成されてしまう。
         // loadValuesAsynchronously を駆使して preferredTransform を取っておき、そこから Orientation を計算しておくことによって解決する。
         // preferredTransform をそのまま放り込むと変になるという辛さ。
-        let image = CIImage(cvPixelBuffer: pixelBuffer).applyingOrientation(preferredCGImagePropertyOrientation)
+        let image = CIImage(cvPixelBuffer: pixelBuffer).oriented(forExifOrientation: preferredCGImagePropertyOrientation)
         
         // そのまま放り込むと結構デカかったりするのでよしなにリサイズしときたい
         let screenScale: CGFloat = imageView.window?.screen.scale ?? 1.0
@@ -387,7 +387,7 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
         let scaleHeight = limitHeight / imageHeight
         let scale = min(scaleWidth, scaleHeight)
         let imageScale = min(1.0, scale)
-        let scaledImage = image.applying(CGAffineTransform(scaleX: imageScale, y: imageScale))
+        let scaledImage = image.transformed(by: CGAffineTransform(scaleX: imageScale, y: imageScale))
         
         self.image = scaledImage
     }

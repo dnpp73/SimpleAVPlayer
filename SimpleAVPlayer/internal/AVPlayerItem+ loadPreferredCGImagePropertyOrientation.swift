@@ -9,7 +9,7 @@ internal extension AVPlayerItem {
                 completion(false, .identity)
                 return
             }
-            guard let videoTrack = self?.asset.tracks(withMediaType: AVMediaTypeVideo).first else {
+            guard let videoTrack = self?.asset.tracks(withMediaType: .video).first else {
                 completion(false, .identity)
                 return
             }

@@ -178,7 +178,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
             return nil
         }
         
-        let ciImage = CIImage(cvPixelBuffer: pixelBuffer).applyingOrientation(preferredCGImagePropertyOrientation)
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(forExifOrientation: preferredCGImagePropertyOrientation)
         guard let cgImage = cicontext.createCGImage(ciImage, from: ciImage.extent) else {
             return nil
         }
@@ -275,14 +275,14 @@ public final class AVPlayerView: UIView, PlayerControllable {
     
     public override var contentMode: UIViewContentMode {
         didSet {
-            let videoGravity: String
+            let videoGravity: AVLayerVideoGravity
             switch contentMode {
-            case .scaleToFill:     videoGravity = AVLayerVideoGravityResize
-            case .scaleAspectFit:  videoGravity = AVLayerVideoGravityResizeAspect
-            case .scaleAspectFill: videoGravity = AVLayerVideoGravityResizeAspectFill
-            default:               videoGravity = AVLayerVideoGravityResizeAspect // AVPlayerLayer's Default
+            case .scaleToFill:     videoGravity = .resize
+            case .scaleAspectFit:  videoGravity = .resizeAspect
+            case .scaleAspectFill: videoGravity = .resizeAspectFill
+            default:               videoGravity = .resizeAspect // AVPlayerLayer's Default
             }
-
+            
             // 何故か CoreAnimation の暗黙の action っぽくはないアニメーションが走る
             // AVCaptureVideoPreviewLayer とは違うんだな…
             CATransaction.begin()
@@ -298,9 +298,9 @@ public final class AVPlayerView: UIView, PlayerControllable {
     
     private func setupAVPlayerItemNotifications() {
         [
-            NSNotification.Name.AVPlayerItemDidPlayToEndTime,
-            NSNotification.Name.AVPlayerItemFailedToPlayToEndTime,
-            NSNotification.Name.AVPlayerItemPlaybackStalled
+            Notification.Name.AVPlayerItemDidPlayToEndTime,
+            Notification.Name.AVPlayerItemFailedToPlayToEndTime,
+            Notification.Name.AVPlayerItemPlaybackStalled
         ].forEach { name in
             NotificationCenter.default.addObserver(self, selector: #selector(self.handle(playerItemNotification:)), name: name, object: nil)
         }
@@ -312,11 +312,11 @@ public final class AVPlayerView: UIView, PlayerControllable {
         }
         onMainThread {
             switch (notification.name) {
-            case NSNotification.Name.AVPlayerItemPlaybackStalled:
+            case .AVPlayerItemPlaybackStalled:
                 delegate.playerItemStalled?(self, playerItem: currentItem)
-            case NSNotification.Name.AVPlayerItemFailedToPlayToEndTime:
+            case .AVPlayerItemFailedToPlayToEndTime:
                 delegate.playerItemFailedToPlayToEnd?(self, playerItem: currentItem)
-            case NSNotification.Name.AVPlayerItemDidPlayToEndTime:
+            case .AVPlayerItemDidPlayToEndTime:
                 delegate.playerItemDidPlayToEndTime?(self, playerItem: currentItem)
             default:
                 break
