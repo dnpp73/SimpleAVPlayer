@@ -105,8 +105,8 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
     
     public var currentTime: CMTime {
         get {
-            guard let currentTime = player.currentItem?.currentTime(), CMTIME_IS_VALID(currentTime) else {
-                return kCMTimeInvalid
+            guard let currentTime = player.currentItem?.currentTime(), currentTime.isValid else {
+                return .invalid
             }
             return currentTime
         }
@@ -114,8 +114,8 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
     
     public var duration: CMTime {
         get {
-            guard let duration = player.currentItem?.duration, CMTIME_IS_VALID(duration) else {
-                return kCMTimeInvalid
+            guard let duration = player.currentItem?.duration, duration.isValid else {
+                return .invalid
             }
             return duration
         }
@@ -124,7 +124,7 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
     public private(set) var isSeeking: Bool = false
     
     public func seek(to: CMTime) {
-        seek(to: to, toleranceBefore: kCMTimePositiveInfinity, toleranceAfter: kCMTimePositiveInfinity)
+        seek(to: to, toleranceBefore: .positiveInfinity, toleranceAfter: .positiveInfinity)
     }
     
     public func seek(to: CMTime, toleranceBefore: CMTime, toleranceAfter: CMTime) {
@@ -219,7 +219,7 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
     private func setupAVPlayer() {
         player.addObserver(self, forKeyPath: "rate", options: [.new, .old], context: nil)
         player.addObserver(self, forKeyPath: "volume", options: [.new, .old], context: nil)
-        timeObserver = player.addPeriodicTimeObserver(forInterval: CMTimeMakeWithSeconds(0.2, Int32(NSEC_PER_SEC)), queue: DispatchQueue.main) { [unowned self] (time: CMTime) -> Void in
+        timeObserver = player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.2, preferredTimescale: Int32(NSEC_PER_SEC)), queue: DispatchQueue.main) { [unowned self] (time: CMTime) -> Void in
             self.playerDidChangePlayTimePeriodic()
         } as AnyObject?
         player.allowsExternalPlayback = false
@@ -239,7 +239,7 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
     private func setupDisplayLink() {
         displayLink = { Void -> CADisplayLink in
             let displayLink = CADisplayLink(target: self, selector: #selector(self.displayLinkCallback(_:)))
-            displayLink.add(to: RunLoop.current, forMode: RunLoopMode.commonModes)
+            displayLink.add(to: .current, forMode: .common)
             displayLink.isPaused = true
             // displayLink.frameInterval = 60 // これをやると 1 Hz になる
             return displayLink
@@ -307,7 +307,7 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
                     
                     if  playerItem.status == .readyToPlay,
                         self.image == nil,
-                        let pixelBuffer: CVPixelBuffer = self.videoOutput.copyPixelBuffer(forItemTime: kCMTimeZero, itemTimeForDisplay: nil)
+                        let pixelBuffer: CVPixelBuffer = self.videoOutput.copyPixelBuffer(forItemTime: .zero, itemTimeForDisplay: nil)
                     {
                         self.image = CIImage(cvPixelBuffer: pixelBuffer).oriented(forExifOrientation: self.preferredCGImagePropertyOrientation)
                     }
@@ -349,7 +349,7 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
         imageView.frame = bounds
     }
     
-    public override var contentMode: UIViewContentMode {
+    public override var contentMode: UIView.ContentMode {
         didSet {
             imageView.contentMode = contentMode
         }
