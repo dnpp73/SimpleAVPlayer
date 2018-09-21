@@ -2,13 +2,13 @@ import UIKit
 import AVFoundation
 
 public final class AVPlayerView: UIView, PlayerControllable {
-    
+
     // MARK:- Public Vars
-    
+
     public weak var delegate: PlayerControlDelegate? // Xcode のバグで Swift Protocol は @IBOutlet に出来ない
-    
+
     private var wasPlaying: Bool = false
-    
+
     public var playerItem: AVPlayerItem? {
         willSet {
             if let player = player {
@@ -21,7 +21,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
                 }
                 return
             }
-            
+
             playerItem.remove(output)
             for keyPath in playerItemKVOKeyPaths {
                 playerItem.removeObserver(self, forKeyPath: keyPath, context: nil)
@@ -37,15 +37,15 @@ public final class AVPlayerView: UIView, PlayerControllable {
             }
             playerItem.loadPreferredCGImagePropertyOrientation { [weak self] (success: Bool, preferredCGImagePropertyOrientation: Int32) -> Void in
                 guard let `self` = self else { return }
-                
+
                 self.preferredCGImagePropertyOrientation = preferredCGImagePropertyOrientation
-                
+
                 for keyPath in self.playerItemKVOKeyPaths {
                     playerItem.addObserver(self, forKeyPath: keyPath, options: [.new, .old], context: nil)
                 }
                 player.replaceCurrentItem(with: playerItem)
                 playerItem.add(self.output)
-                
+
                 if self.wasPlaying {
                     self.wasPlaying = false
                     self.play()
@@ -53,17 +53,17 @@ public final class AVPlayerView: UIView, PlayerControllable {
             }
         }
     }
-    
+
     // MARK:- Player Control
-    
+
     public func play() {
         player?.play()
     }
-    
+
     public func pause() {
         player?.pause()
     }
-    
+
     public var isPlaying: Bool {
         get {
             guard let player = player, let _ = player.currentItem else {
@@ -72,7 +72,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
             return player.rate != 0.0
         }
     }
-    
+
     public var rate: Float {
         get {
             guard let player = player else {
@@ -87,7 +87,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
             player.rate = newValue
         }
     }
-    
+
     public var currentTime: CMTime {
         get {
             guard let currentTime = player?.currentItem?.currentTime() , currentTime.isValid else {
@@ -96,7 +96,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
             return currentTime
         }
     }
-    
+
     public var duration: CMTime {
         get {
             guard let duration = player?.currentItem?.duration , duration.isValid else {
@@ -105,13 +105,13 @@ public final class AVPlayerView: UIView, PlayerControllable {
             return duration
         }
     }
-    
+
     public private(set) var isSeeking: Bool = false
-    
+
     public func seek(to: CMTime) {
         seek(to: to, toleranceBefore: .positiveInfinity, toleranceAfter: .positiveInfinity)
     }
-    
+
     public func seek(to: CMTime, toleranceBefore: CMTime, toleranceAfter: CMTime) {
         guard let player = player else {
             return
@@ -132,7 +132,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
             }
         }
     }
-    
+
     public var loadedTimeRanges: [CMTimeRange] {
         get {
             guard let loadedTimeRangeValues = player?.currentItem?.loadedTimeRanges else {
@@ -143,7 +143,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
             }
         }
     }
-    
+
     public var volume: Float {
         get {
             guard let player = player else {
@@ -158,26 +158,26 @@ public final class AVPlayerView: UIView, PlayerControllable {
             player.volume = newValue
         }
     }
-    
+
     // MARK:- ScreenShot
-    
+
     private let cicontext = CIContext(options: nil)
-    
+
     private var preferredCGImagePropertyOrientation: Int32 = 1
-    
+
     public func createScreenShot() -> UIImage? {
         guard let _ = player?.currentItem else {
             return nil
         }
-        
+
         guard let time = player?.currentTime() else {
             return nil
         }
-        
+
         guard let pixelBuffer = output.copyPixelBuffer(forItemTime: time, itemTimeForDisplay: nil) else {
             return nil
         }
-        
+
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(forExifOrientation: preferredCGImagePropertyOrientation)
         guard let cgImage = cicontext.createCGImage(ciImage, from: ciImage.extent) else {
             return nil
@@ -187,11 +187,11 @@ public final class AVPlayerView: UIView, PlayerControllable {
     }
 
     // MARK:- AVPlayerLayer
-    
+
     override public class var layerClass : AnyClass {
         return AVPlayerLayer.self
     }
-    
+
     private var playerLayer: AVPlayerLayer {
         get {
             guard let playerLayer = layer as? AVPlayerLayer else {
@@ -200,7 +200,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
             return playerLayer
         }
     }
-    
+
     private var player: AVPlayer? {
         get {
             return playerLayer.player
@@ -209,38 +209,38 @@ public final class AVPlayerView: UIView, PlayerControllable {
             playerLayer.player = newValue
         }
     }
-    
+
     // MARK:- Private Vars
-    
+
     private let output = AVPlayerItemVideoOutput(pixelBufferAttributes:Dictionary<String, AnyObject>())
-    
+
     private var timeObserver: AnyObject?
-    
+
     private let playerItemKVOKeyPaths: [String] = [
         "status",
         "playbackLikelyToKeepUp",
         "loadedTimeRanges"
     ]
-    
+
     // MARK:- Initializer
-    
+
     deinit {
         NotificationCenter.default.removeObserver(self)
         cleanupPlayer()
     }
-    
+
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupAVPlayer()
         setupAVPlayerItemNotifications()
     }
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupAVPlayer()
         setupAVPlayerItemNotifications()
     }
-    
+
     private func setupAVPlayer() {
         if self.player != nil {
             return
@@ -256,7 +256,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
         player.addObserver(self, forKeyPath: "externalPlaybackActive", options: [.new, .old], context: nil)
         self.player = player
     }
-    
+
     private func cleanupPlayer() {
         guard let player = player else {
             return
@@ -270,9 +270,9 @@ public final class AVPlayerView: UIView, PlayerControllable {
         playerItem = nil
         self.player = nil
     }
-    
+
     // MARK:- UIView
-    
+
     public override var contentMode: UIView.ContentMode {
         didSet {
             let videoGravity: AVLayerVideoGravity
@@ -282,7 +282,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
             case .scaleAspectFill: videoGravity = .resizeAspectFill
             default:               videoGravity = .resizeAspect // AVPlayerLayer's Default
             }
-            
+
             // 何故か CoreAnimation の暗黙の action っぽくはないアニメーションが走る
             // AVCaptureVideoPreviewLayer とは違うんだな…
             CATransaction.begin()
@@ -293,9 +293,9 @@ public final class AVPlayerView: UIView, PlayerControllable {
             playerLayer.videoGravity = videoGravity
         }
     }
-    
+
     // MARK:- Notification
-    
+
     private func setupAVPlayerItemNotifications() {
         [
             Notification.Name.AVPlayerItemDidPlayToEndTime,
@@ -323,14 +323,14 @@ public final class AVPlayerView: UIView, PlayerControllable {
             }
         }
     }
-    
+
     private func playerDidChangePlayTimePeriodic() {
         // addPeriodicTimeObserver で指定しているので必ずメインスレッドから来る
         delegate?.playerDidChangePlayTimePeriodic(self)
     }
-    
+
     //MARK:-  KVO
-    
+
     override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if let keyPath = keyPath, let player = object as? AVPlayer, player == self.player, let delegate = delegate {
             onMainThread {
@@ -366,5 +366,5 @@ public final class AVPlayerView: UIView, PlayerControllable {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
-    
+
 }

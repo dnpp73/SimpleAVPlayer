@@ -1,5 +1,7 @@
 whitelist_rules:
   - todo
   - leading_whitespace
+  - trailing_newline
+  - trailing_whitespace
 included:
   - SimpleAVPlayer
