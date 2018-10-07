@@ -3,7 +3,7 @@ import AVFoundation
 
 public final class AVPlayerView: UIView, PlayerControllable {
 
-    // MARK:- Public Vars
+    // MARK: - Public Vars
 
     public weak var delegate: PlayerControlDelegate? // Xcode のバグで Swift Protocol は @IBOutlet に出来ない
 
@@ -54,7 +54,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
         }
     }
 
-    // MARK:- Player Control
+    // MARK: - Player Control
 
     public func play() {
         player?.play()
@@ -90,7 +90,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
 
     public var currentTime: CMTime {
         get {
-            guard let currentTime = player?.currentItem?.currentTime() , currentTime.isValid else {
+            guard let currentTime = player?.currentItem?.currentTime(), currentTime.isValid else {
                 return .invalid
             }
             return currentTime
@@ -99,7 +99,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
 
     public var duration: CMTime {
         get {
-            guard let duration = player?.currentItem?.duration , duration.isValid else {
+            guard let duration = player?.currentItem?.duration, duration.isValid else {
                 return .invalid
             }
             return duration
@@ -159,7 +159,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
         }
     }
 
-    // MARK:- ScreenShot
+    // MARK: - ScreenShot
 
     private let cicontext = CIContext(options: nil)
 
@@ -186,9 +186,9 @@ public final class AVPlayerView: UIView, PlayerControllable {
         return image
     }
 
-    // MARK:- AVPlayerLayer
+    // MARK: - AVPlayerLayer
 
-    override public class var layerClass : AnyClass {
+    override public class var layerClass: AnyClass {
         return AVPlayerLayer.self
     }
 
@@ -210,9 +210,9 @@ public final class AVPlayerView: UIView, PlayerControllable {
         }
     }
 
-    // MARK:- Private Vars
+    // MARK: - Private Vars
 
-    private let output = AVPlayerItemVideoOutput(pixelBufferAttributes:Dictionary<String, AnyObject>())
+    private let output = AVPlayerItemVideoOutput(pixelBufferAttributes: Dictionary<String, AnyObject>())
 
     private var timeObserver: AnyObject?
 
@@ -222,7 +222,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
         "loadedTimeRanges"
     ]
 
-    // MARK:- Initializer
+    // MARK: - Initializer
 
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -271,7 +271,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
         self.player = nil
     }
 
-    // MARK:- UIView
+    // MARK: - UIView
 
     public override var contentMode: UIView.ContentMode {
         didSet {
@@ -294,7 +294,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
         }
     }
 
-    // MARK:- Notification
+    // MARK: - Notification
 
     private func setupAVPlayerItemNotifications() {
         [
@@ -329,9 +329,9 @@ public final class AVPlayerView: UIView, PlayerControllable {
         delegate?.playerDidChangePlayTimePeriodic(self)
     }
 
-    //MARK:-  KVO
+    // MARK: - KVO
 
-    override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         if let keyPath = keyPath, let player = object as? AVPlayer, player == self.player, let delegate = delegate {
             onMainThread {
                 switch keyPath {
@@ -346,8 +346,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
                     break
                 }
             }
-        }
-        else if let keyPath = keyPath, let playerItem = object as? AVPlayerItem, playerItem == player?.currentItem, let delegate = delegate {
+        } else if let keyPath = keyPath, let playerItem = object as? AVPlayerItem, playerItem == player?.currentItem, let delegate = delegate {
             onMainThread {
                 switch keyPath {
                 case "status":
@@ -361,8 +360,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
                     break
                 }
             }
-        }
-        else {
+        } else {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }

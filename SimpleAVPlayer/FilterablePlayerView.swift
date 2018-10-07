@@ -73,7 +73,7 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
         }
     }
 
-    // MARK:- Player Control
+    // MARK: - Player Control
 
     public func play() {
         displayLink?.isPaused = false
@@ -168,7 +168,7 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
         }
     }
 
-    // MARK:- Private Vars
+    // MARK: - Private Vars
 
     private var displayLink: CADisplayLink?
 
@@ -191,7 +191,7 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
 
     private var preferredCGImagePropertyOrientation: Int32 = 1
 
-    // MARK:- Initializer
+    // MARK: - Initializer
 
     deinit {
         cleanupPlayer() // なんとなく displayLink を止めてからにしておく
@@ -246,7 +246,7 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
         }(())
     }
 
-    // MARK:- Notification
+    // MARK: - Notification
 
     private func setupAVPlayerItemNotifications() {
         let notifications: [Notification.Name] = [
@@ -282,9 +282,9 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
         delegate?.playerDidChangePlayTimePeriodic(self)
     }
 
-    //MARK:-  KVO
+    // MARK: - KVO
 
-    override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         if let keyPath = keyPath, let player = object as? AVPlayer, player == self.player, let delegate = delegate {
             onMainThread {
                 switch keyPath {
@@ -299,16 +299,14 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
                     break
                 }
             }
-        }
-        else if let keyPath = keyPath, let playerItem = object as? AVPlayerItem, playerItem == player.currentItem, let delegate = delegate {
+        } else if let keyPath = keyPath, let playerItem = object as? AVPlayerItem, playerItem == player.currentItem, let delegate = delegate {
             onMainThread {
                 switch keyPath {
                 case "status":
 
                     if  playerItem.status == .readyToPlay,
                         self.image == nil,
-                        let pixelBuffer: CVPixelBuffer = self.videoOutput.copyPixelBuffer(forItemTime: .zero, itemTimeForDisplay: nil)
-                    {
+                        let pixelBuffer: CVPixelBuffer = self.videoOutput.copyPixelBuffer(forItemTime: .zero, itemTimeForDisplay: nil) {
                         self.image = CIImage(cvPixelBuffer: pixelBuffer).oriented(forExifOrientation: self.preferredCGImagePropertyOrientation)
                     }
 
@@ -322,13 +320,12 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
                     break
                 }
             }
-        }
-        else {
+        } else {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
 
-    // MARK:- UIView
+    // MARK: - UIView
 
     public override func removeFromSuperview() {
         displayLink?.isPaused = true
@@ -355,7 +352,7 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
         }
     }
 
-    // MARK:- CADisplayLink
+    // MARK: - CADisplayLink
 
     @objc private func displayLinkCallback(_ displayLink: CADisplayLink) {
         let nextVSync: CFTimeInterval = (displayLink.timestamp + displayLink.duration)
