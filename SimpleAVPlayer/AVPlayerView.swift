@@ -36,7 +36,9 @@ public final class AVPlayerView: UIView, PlayerControllable {
                 return
             }
             playerItem.loadPreferredCGImagePropertyOrientation { [weak self] (success: Bool, preferredCGImagePropertyOrientation: Int32) -> Void in
-                guard let `self` = self else { return }
+                guard let self = self else {
+                    return
+                }
 
                 self.preferredCGImagePropertyOrientation = preferredCGImagePropertyOrientation
 
@@ -65,45 +67,39 @@ public final class AVPlayerView: UIView, PlayerControllable {
     }
 
     public var isPlaying: Bool {
-        get {
-            guard let player = player, let _ = player.currentItem else {
-                return false
-            }
-            return player.rate != 0.0
+        guard let player = player, let _ = player.currentItem else {
+            return false
         }
+        return player.rate != 0.0
     }
 
     public var rate: Float {
         get {
             guard let player = player else {
-                fatalError()
+                return .nan
             }
             return player.rate
         }
         set {
             guard let player = player else {
-                fatalError()
+                return
             }
             player.rate = newValue
         }
     }
 
     public var currentTime: CMTime {
-        get {
-            guard let currentTime = player?.currentItem?.currentTime(), currentTime.isValid else {
-                return .invalid
-            }
-            return currentTime
+        guard let currentTime = player?.currentItem?.currentTime(), currentTime.isValid else {
+            return .invalid
         }
+        return currentTime
     }
 
     public var duration: CMTime {
-        get {
-            guard let duration = player?.currentItem?.duration, duration.isValid else {
-                return .invalid
-            }
-            return duration
+        guard let duration = player?.currentItem?.duration, duration.isValid else {
+            return .invalid
         }
+        return duration
     }
 
     public private(set) var isSeeking: Bool = false
@@ -119,7 +115,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
         // ドキュメントによると kCMTimePositiveInfinity を放り込めば単純に seek(to:) と同じらしい。
         isSeeking = true
         player.seek(to: to, toleranceBefore: toleranceBefore, toleranceAfter: toleranceAfter) { [weak self] (success: Bool) -> Void in
-            guard let `self` = self, let delegate = self.delegate else {
+            guard let self = self, let delegate = self.delegate else {
                 return
             }
             self.isSeeking = false
@@ -134,26 +130,24 @@ public final class AVPlayerView: UIView, PlayerControllable {
     }
 
     public var loadedTimeRanges: [CMTimeRange] {
-        get {
-            guard let loadedTimeRangeValues = player?.currentItem?.loadedTimeRanges else {
-                return []
-            }
-            return loadedTimeRangeValues.map { (loadedTimeRangeValue: NSValue) -> CMTimeRange in
-                return loadedTimeRangeValue.timeRangeValue
-            }
+        guard let loadedTimeRangeValues = player?.currentItem?.loadedTimeRanges else {
+            return []
+        }
+        return loadedTimeRangeValues.map { (loadedTimeRangeValue: NSValue) -> CMTimeRange in
+            return loadedTimeRangeValue.timeRangeValue
         }
     }
 
     public var volume: Float {
         get {
             guard let player = player else {
-                fatalError()
+                return .nan
             }
             return player.volume
         }
         set {
             guard let player = player else {
-                fatalError()
+                return
             }
             player.volume = newValue
         }
@@ -193,12 +187,10 @@ public final class AVPlayerView: UIView, PlayerControllable {
     }
 
     private var playerLayer: AVPlayerLayer {
-        get {
-            guard let playerLayer = layer as? AVPlayerLayer else {
-                fatalError()
-            }
-            return playerLayer
+        guard let playerLayer = layer as? AVPlayerLayer else {
+            fatalError("must not here")
         }
+        return playerLayer
     }
 
     private var player: AVPlayer? {
@@ -311,7 +303,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
             return
         }
         onMainThread {
-            switch (notification.name) {
+            switch notification.name {
             case .AVPlayerItemPlaybackStalled:
                 delegate.playerItemStalled(self, playerItem: currentItem)
             case .AVPlayerItemFailedToPlayToEndTime:

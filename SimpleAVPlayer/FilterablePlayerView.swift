@@ -55,7 +55,9 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
                 return
             }
             playerItem.loadPreferredCGImagePropertyOrientation { [weak self] (success: Bool, preferredCGImagePropertyOrientation: Int32) -> Void in
-                guard let `self` = self else { return }
+                guard let self = self else {
+                    return
+                }
 
                 self.preferredCGImagePropertyOrientation = preferredCGImagePropertyOrientation
 
@@ -86,12 +88,10 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
     }
 
     public var isPlaying: Bool {
-        get {
-            if player.currentItem == nil {
-                return false
-            }
-            return player.rate != 0.0
+        if player.currentItem == nil {
+            return false
         }
+        return player.rate != 0.0
     }
 
     public var rate: Float {
@@ -104,21 +104,17 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
     }
 
     public var currentTime: CMTime {
-        get {
-            guard let currentTime = player.currentItem?.currentTime(), currentTime.isValid else {
-                return .invalid
-            }
-            return currentTime
+        guard let currentTime = player.currentItem?.currentTime(), currentTime.isValid else {
+            return .invalid
         }
+        return currentTime
     }
 
     public var duration: CMTime {
-        get {
-            guard let duration = player.currentItem?.duration, duration.isValid else {
-                return .invalid
-            }
-            return duration
+        guard let duration = player.currentItem?.duration, duration.isValid else {
+            return .invalid
         }
+        return duration
     }
 
     public private(set) var isSeeking: Bool = false
@@ -133,7 +129,7 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
         let wasDisplayLinkPaused = displayLink?.isPaused ?? true
         displayLink?.isPaused = false
         player.seek(to: to, toleranceBefore: toleranceBefore, toleranceAfter: toleranceAfter) { [weak self] (success: Bool) -> Void in
-            guard let `self` = self, let delegate = self.delegate else {
+            guard let self = self, let delegate = self.delegate else {
                 return
             }
             self.isSeeking = false
@@ -149,13 +145,11 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
     }
 
     public var loadedTimeRanges: [CMTimeRange] {
-        get {
-            guard let loadedTimeRangeValues = player.currentItem?.loadedTimeRanges else {
-                return []
-            }
-            return loadedTimeRangeValues.map { (loadedTimeRangeValue: NSValue) -> CMTimeRange in
-                return loadedTimeRangeValue.timeRangeValue
-            }
+        guard let loadedTimeRangeValues = player.currentItem?.loadedTimeRanges else {
+            return []
+        }
+        return loadedTimeRangeValues.map { (loadedTimeRangeValue: NSValue) -> CMTimeRange in
+            return loadedTimeRangeValue.timeRangeValue
         }
     }
 
@@ -264,7 +258,7 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
             return
         }
         onMainThread {
-            switch (notification.name) {
+            switch notification.name {
             case .AVPlayerItemPlaybackStalled:
                 delegate.playerItemStalled(self, playerItem: currentItem)
             case .AVPlayerItemFailedToPlayToEndTime:

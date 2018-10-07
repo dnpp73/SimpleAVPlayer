@@ -47,7 +47,7 @@ whitelist_rules:
   - fatal_error_message
   # - identifier_name
   - valid_ibinspectable
-  - attributes
+  # - attributes
 identifier_name:
   min_length: 0
   max_length:
