@@ -23,9 +23,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
             }
 
             playerItem.remove(output)
-            for keyPath in playerItemKVOKeyPaths {
-                playerItem.removeObserver(self, forKeyPath: keyPath, context: nil)
-            }
+            playerItemObservations.removeAll() // NSKeyValueObservation の deinit を発行させるだけで良い。
         }
         didSet {
             guard let player = player else {
@@ -42,9 +40,26 @@ public final class AVPlayerView: UIView, PlayerControllable {
 
                 self.preferredCGImagePropertyOrientation = preferredCGImagePropertyOrientation
 
-                for keyPath in self.playerItemKVOKeyPaths {
-                    playerItem.addObserver(self, forKeyPath: keyPath, options: [.new, .old], context: nil)
-                }
+                self.playerItemObservations.append(playerItem.observe(\.status, options: [.new, .old], changeHandler: { [weak self] (playerItem, changes) in
+                    onMainThread {
+                        if let s = self, let d = s.delegate {
+                            d.playerItemDidChangeStatus(s, playerItem: playerItem)
+                        }
+                    }
+                }))
+                /*
+                self.playerItemObservations.append(playerItem.observe(\.isPlaybackLikelyToKeepUp, options: [.new, .old], changeHandler: { (playerItem, changes) in
+                    // print("[KVO PlayerItem] playbackLikelyToKeepUp")
+                }))
+                 */
+                self.playerItemObservations.append(playerItem.observe(\.loadedTimeRanges, options: [.new, .old], changeHandler: { [weak self] (playerItem, changes) in
+                    onMainThread {
+                        if let s = self, let d = s.delegate {
+                            d.playerItemDidChangeLoadedTimeRanges(s, playerItem: playerItem)
+                        }
+                    }
+                }))
+
                 player.replaceCurrentItem(with: playerItem)
                 playerItem.add(self.output)
 
@@ -207,12 +222,8 @@ public final class AVPlayerView: UIView, PlayerControllable {
     private let output = AVPlayerItemVideoOutput(pixelBufferAttributes: Dictionary<String, AnyObject>())
 
     private var timeObserver: AnyObject?
-
-    private let playerItemKVOKeyPaths: [String] = [
-        "status",
-        "playbackLikelyToKeepUp",
-        "loadedTimeRanges"
-    ]
+    private var playerItemObservations: [NSKeyValueObservation] = []
+    private var playerObservations: [NSKeyValueObservation] = []
 
     // MARK: - Initializer
 
@@ -238,14 +249,30 @@ public final class AVPlayerView: UIView, PlayerControllable {
             return
         }
         let player = AVPlayer()
-        player.addObserver(self, forKeyPath: "rate", options: [.new, .old], context: nil)
-        player.addObserver(self, forKeyPath: "volume", options: [.new, .old], context: nil)
+        playerObservations.append(player.observe(\.rate, options: [.new, .old], changeHandler: { [weak self] (player, changes) in
+            if let s = self, let d = s.delegate {
+                onMainThread {
+                    d.playerDidChangeRate(s)
+                }
+            }
+        }))
+        playerObservations.append(player.observe(\.volume, options: [.new, .old], changeHandler: { [weak self] (player, changes) in
+            if let s = self, let d = s.delegate {
+                onMainThread {
+                    d.playerDidChangeVolume(s)
+                }
+            }
+        }))
         timeObserver = player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.2, preferredTimescale: Int32(NSEC_PER_SEC)), queue: DispatchQueue.main) { [unowned self] (time: CMTime) -> Void in
             self.playerDidChangePlayTimePeriodic()
         } as AnyObject?
         player.allowsExternalPlayback = true
         player.usesExternalPlaybackWhileExternalScreenIsActive = true
-        player.addObserver(self, forKeyPath: "externalPlaybackActive", options: [.new, .old], context: nil)
+        /*
+        playerObservations.append(player.observe(\.isExternalPlaybackActive, options: [.new, .old], changeHandler: { (player, changes) in
+            // print("[KVO Player] externalPlaybackActive")
+        }))
+         */
         self.player = player
     }
 
@@ -253,9 +280,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
         guard let player = player else {
             return
         }
-        player.removeObserver(self, forKeyPath: "rate", context: nil)
-        player.removeObserver(self, forKeyPath: "volume", context: nil)
-        player.removeObserver(self, forKeyPath: "externalPlaybackActive", context: nil)
+        playerObservations.removeAll() // NSKeyValueObservation の deinit を発行させるだけで良い。
         if let timeObserver = timeObserver {
             player.removeTimeObserver(timeObserver)
         }
@@ -319,42 +344,6 @@ public final class AVPlayerView: UIView, PlayerControllable {
     private func playerDidChangePlayTimePeriodic() {
         // addPeriodicTimeObserver で指定しているので必ずメインスレッドから来る
         delegate?.playerDidChangePlayTimePeriodic(self)
-    }
-
-    // MARK: - KVO
-
-    override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
-        if let keyPath = keyPath, let player = object as? AVPlayer, player == self.player, let delegate = delegate {
-            onMainThread {
-                switch keyPath {
-                case "rate":
-                    delegate.playerDidChangeRate(self)
-                case "volume":
-                    delegate.playerDidChangeVolume(self)
-                case "externalPlaybackActive":
-                    // print("[KVO Player] externalPlaybackActive")
-                    break
-                default:
-                    break
-                }
-            }
-        } else if let keyPath = keyPath, let playerItem = object as? AVPlayerItem, playerItem == player?.currentItem, let delegate = delegate {
-            onMainThread {
-                switch keyPath {
-                case "status":
-                    delegate.playerItemDidChangeStatus(self, playerItem: playerItem)
-                case "playbackLikelyToKeepUp":
-                    // print("[KVO PlayerItem] playbackLikelyToKeepUp")
-                    break
-                case "loadedTimeRanges":
-                    delegate.playerItemDidChangeLoadedTimeRanges(self, playerItem: playerItem)
-                default:
-                    break
-                }
-            }
-        } else {
-            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-        }
     }
 
 }
