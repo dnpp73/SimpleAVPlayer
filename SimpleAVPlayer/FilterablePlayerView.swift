@@ -142,10 +142,18 @@ public final class FilterablePlayerView: UIView, PlayerControllable {
     public private(set) var isSeeking: Bool = false
 
     public func seek(to: CMTime) {
-        seek(to: to, toleranceBefore: .positiveInfinity, toleranceAfter: .positiveInfinity)
+        seek(to: to, toleranceBefore: .positiveInfinity, toleranceAfter: .positiveInfinity) { _ in }
+    }
+
+    public func seek(to: CMTime, completionHandler: @escaping (Bool) -> Void) {
+        seek(to: to, toleranceBefore: .positiveInfinity, toleranceAfter: .positiveInfinity, completionHandler: completionHandler)
     }
 
     public func seek(to: CMTime, toleranceBefore: CMTime, toleranceAfter: CMTime) {
+        seek(to: to, toleranceBefore: toleranceBefore, toleranceAfter: toleranceAfter) { _ in }
+    }
+
+    public func seek(to: CMTime, toleranceBefore: CMTime, toleranceAfter: CMTime, completionHandler: @escaping (Bool) -> Void) {
         // ドキュメントによると kCMTimePositiveInfinity を放り込めば単純に seek(to:) と同じらしい。
         isSeeking = true
         let wasDisplayLinkPaused = displayLink?.isPaused ?? true
