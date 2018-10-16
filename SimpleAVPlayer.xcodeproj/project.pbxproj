@@ -12,15 +12,11 @@
 		EA61FF341EA8962100CD2CC9 /* SimpleAVPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = EA61FF321EA8962100CD2CC9 /* SimpleAVPlayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EA61FF461EA897A700CD2CC9 /* PlayerControlInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA61FF451EA897A700CD2CC9 /* PlayerControlInterface.swift */; };
 		EA61FF481EA897AE00CD2CC9 /* AVPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA61FF471EA897AE00CD2CC9 /* AVPlayerView.swift */; };
-		EA61FF4A1EA897B400CD2CC9 /* FilterablePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA61FF491EA897B400CD2CC9 /* FilterablePlayerView.swift */; };
-		EA61FF551EA899A800CD2CC9 /* CIFilterExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA61FF531EA899A800CD2CC9 /* CIFilterExtension.framework */; };
-		EA61FF561EA899A800CD2CC9 /* GPUCIImageView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA61FF541EA899A800CD2CC9 /* GPUCIImageView.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		EA3C32F91EA89A3A0097BBB3 /* AVPlayerItem+ loadPreferredCGImagePropertyOrientation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVPlayerItem+ loadPreferredCGImagePropertyOrientation.swift"; sourceTree = "<group>"; };
 		EA3C32FA1EA89A3A0097BBB3 /* OnMainThread.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnMainThread.swift; sourceTree = "<group>"; };
-		EA3C32FD1EA89A870097BBB3 /* Cartfile.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile.resolved; sourceTree = "<group>"; };
 		EA61FF2F1EA8962100CD2CC9 /* SimpleAVPlayer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SimpleAVPlayer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA61FF321EA8962100CD2CC9 /* SimpleAVPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleAVPlayer.h; sourceTree = "<group>"; };
 		EA61FF331EA8962100CD2CC9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -30,10 +26,6 @@
 		EA61FF401EA8970D00CD2CC9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		EA61FF451EA897A700CD2CC9 /* PlayerControlInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerControlInterface.swift; sourceTree = "<group>"; };
 		EA61FF471EA897AE00CD2CC9 /* AVPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVPlayerView.swift; sourceTree = "<group>"; };
-		EA61FF491EA897B400CD2CC9 /* FilterablePlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterablePlayerView.swift; sourceTree = "<group>"; };
-		EA61FF511EA898DB00CD2CC9 /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
-		EA61FF531EA899A800CD2CC9 /* CIFilterExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CIFilterExtension.framework; path = Carthage/Build/iOS/CIFilterExtension.framework; sourceTree = "<group>"; };
-		EA61FF541EA899A800CD2CC9 /* GPUCIImageView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GPUCIImageView.framework; path = Carthage/Build/iOS/GPUCIImageView.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,8 +33,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EA61FF551EA899A800CD2CC9 /* CIFilterExtension.framework in Frameworks */,
-				EA61FF561EA899A800CD2CC9 /* GPUCIImageView.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,10 +52,8 @@
 			isa = PBXGroup;
 			children = (
 				EA61FF3C1EA896E400CD2CC9 /* dotfiles */,
-				EA61FF501EA898BB00CD2CC9 /* Dependency */,
 				EA61FF3B1EA896DE00CD2CC9 /* Documentation */,
 				EA61FF311EA8962100CD2CC9 /* SimpleAVPlayer */,
-				EA61FF521EA898F200CD2CC9 /* Frameworks */,
 				EA61FF301EA8962100CD2CC9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -84,7 +72,6 @@
 				EA3C32F81EA89A3A0097BBB3 /* internal */,
 				EA61FF451EA897A700CD2CC9 /* PlayerControlInterface.swift */,
 				EA61FF471EA897AE00CD2CC9 /* AVPlayerView.swift */,
-				EA61FF491EA897B400CD2CC9 /* FilterablePlayerView.swift */,
 				EA61FF321EA8962100CD2CC9 /* SimpleAVPlayer.h */,
 				EA61FF331EA8962100CD2CC9 /* Info.plist */,
 			);
@@ -107,24 +94,6 @@
 				EA61FF3E1EA8970200CD2CC9 /* .swiftlint.yml */,
 			);
 			name = dotfiles;
-			sourceTree = "<group>";
-		};
-		EA61FF501EA898BB00CD2CC9 /* Dependency */ = {
-			isa = PBXGroup;
-			children = (
-				EA61FF511EA898DB00CD2CC9 /* Cartfile */,
-				EA3C32FD1EA89A870097BBB3 /* Cartfile.resolved */,
-			);
-			name = Dependency;
-			sourceTree = "<group>";
-		};
-		EA61FF521EA898F200CD2CC9 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				EA61FF531EA899A800CD2CC9 /* CIFilterExtension.framework */,
-				EA61FF541EA899A800CD2CC9 /* GPUCIImageView.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -229,7 +198,6 @@
 				EA61FF481EA897AE00CD2CC9 /* AVPlayerView.swift in Sources */,
 				EA3C32FB1EA89A3A0097BBB3 /* AVPlayerItem+ loadPreferredCGImagePropertyOrientation.swift in Sources */,
 				EA3C32FC1EA89A3A0097BBB3 /* OnMainThread.swift in Sources */,
-				EA61FF4A1EA897B400CD2CC9 /* FilterablePlayerView.swift in Sources */,
 				EA61FF461EA897A700CD2CC9 /* PlayerControlInterface.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
