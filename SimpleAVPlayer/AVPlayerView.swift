@@ -133,12 +133,22 @@ public final class AVPlayerView: UIView, PlayerControllable {
 
     public func seek(to: CMTime, toleranceBefore: CMTime, toleranceAfter: CMTime, completionHandler: @escaping (Bool) -> Void) {
         guard let player = player else {
+            completionHandler(false)
+            delegate?.playerDidFailSeeking(self)
+            return
+        }
+        if isSeeking {
+            completionHandler(false)
+            delegate?.playerDidFailSeeking(self)
             return
         }
         // ドキュメントによると kCMTimePositiveInfinity を放り込めば単純に seek(to:) と同じらしい。
         isSeeking = true
         player.seek(to: to, toleranceBefore: toleranceBefore, toleranceAfter: toleranceAfter) { [weak self] (success: Bool) -> Void in
             guard let self = self, let delegate = self.delegate else {
+                onMainThread {
+                    completionHandler(success)
+                }
                 return
             }
             self.isSeeking = false

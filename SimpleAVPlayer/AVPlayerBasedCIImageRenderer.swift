@@ -1,5 +1,6 @@
 import Foundation
 import AVFoundation
+import CoreImage
 
 public protocol ImageRendererDelegate: class {
     func imageRendererDidUpdateImage(_ renderer: AVPlayerBasedCIImageRenderer)
@@ -73,16 +74,12 @@ public final class AVPlayerBasedCIImageRenderer: PlayerControllable {
                     if let cgImage = cgImage {
                         self.image = CIImage(cgImage: cgImage).oriented(forExifOrientation: self.preferredCGImagePropertyOrientation)
                     }
-                    /*
                     #warning("magical DispatchQueue.main.asyncAfter")
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        if self.isPlaying == false {
-                            if let pixelBuffer: CVPixelBuffer = self.videoOutput.copyPixelBuffer(forItemTime: .zero, itemTimeForDisplay: nil) {
-                                self.image = CIImage(cvPixelBuffer: pixelBuffer).oriented(forExifOrientation: self.preferredCGImagePropertyOrientation)
-                            }
+                        if self.isPlaying == false && self.isSeeking == false {
+                            self.seek(to: .zero, toleranceBefore: .zero, toleranceAfter: .zero)
                         }
                     }
-                    */
 
                     if self.wasPlaying {
                         self.wasPlaying = false
@@ -169,17 +166,31 @@ public final class AVPlayerBasedCIImageRenderer: PlayerControllable {
     }
 
     public func seek(to: CMTime, toleranceBefore: CMTime, toleranceAfter: CMTime, completionHandler: @escaping (Bool) -> Void) {
+        if isSeeking {
+            completionHandler(false)
+            delegate?.playerDidFailSeeking(self)
+            return
+        }
         // ドキュメントによると kCMTimePositiveInfinity を放り込めば単純に seek(to:) と同じらしい。
         isSeeking = true
         let wasDisplayLinkPaused = displayLink?.isPaused ?? true
         displayLink?.isPaused = false
         player.seek(to: to, toleranceBefore: toleranceBefore, toleranceAfter: toleranceAfter) { [weak self] (success: Bool) -> Void in
             guard let self = self else {
+                onMainThread {
+                    completionHandler(success)
+                }
                 return
             }
             self.isSeeking = false
             onMainThread {
+                if success && self.isPlaying == false {
+                    if let pixelBuffer: CVPixelBuffer = self.videoOutput.copyPixelBuffer(forItemTime: to, itemTimeForDisplay: nil) {
+                        self.image = CIImage(cvPixelBuffer: pixelBuffer).oriented(forExifOrientation: self.preferredCGImagePropertyOrientation)
+                    }
+                }
                 self.displayLink?.isPaused = wasDisplayLinkPaused
+
                 completionHandler(success)
                 if success {
                     self.delegate?.playerDidFinishSeeking(self)
