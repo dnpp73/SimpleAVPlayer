@@ -41,7 +41,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
                 self.preferredCGImagePropertyOrientation = preferredCGImagePropertyOrientation
 
                 self.playerItemObservations.append(playerItem.observe(\.status, options: [.new, .old], changeHandler: { [weak self] (playerItem, changes) in
-                    onMainThread {
+                    onMainThreadAsync {
                         if let s = self, let d = s.delegate {
                             d.playerItemDidChangeStatus(s, playerItem: playerItem)
                         }
@@ -53,7 +53,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
                 }))
                  */
                 self.playerItemObservations.append(playerItem.observe(\.loadedTimeRanges, options: [.new, .old], changeHandler: { [weak self] (playerItem, changes) in
-                    onMainThread {
+                    onMainThreadAsync {
                         if let s = self, let d = s.delegate {
                             d.playerItemDidChangeLoadedTimeRanges(s, playerItem: playerItem)
                         }
@@ -146,13 +146,13 @@ public final class AVPlayerView: UIView, PlayerControllable {
         isSeeking = true
         player.seek(to: to, toleranceBefore: toleranceBefore, toleranceAfter: toleranceAfter) { [weak self] (success: Bool) -> Void in
             guard let self = self, let delegate = self.delegate else {
-                onMainThread {
+                onMainThreadAsync {
                     completionHandler(success)
                 }
                 return
             }
             self.isSeeking = false
-            onMainThread {
+            onMainThreadAsync {
                 completionHandler(success)
                 if success {
                     delegate.playerDidFinishSeeking(self)
@@ -270,14 +270,14 @@ public final class AVPlayerView: UIView, PlayerControllable {
         let player = AVPlayer()
         playerObservations.append(player.observe(\.rate, options: [.new, .old], changeHandler: { [weak self] (player, changes) in
             if let s = self, let d = s.delegate {
-                onMainThread {
+                onMainThreadAsync {
                     d.playerDidChangeRate(s)
                 }
             }
         }))
         playerObservations.append(player.observe(\.volume, options: [.new, .old], changeHandler: { [weak self] (player, changes) in
             if let s = self, let d = s.delegate {
-                onMainThread {
+                onMainThreadAsync {
                     d.playerDidChangeVolume(s)
                 }
             }
@@ -346,7 +346,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
         guard let object = notification.object as? AVPlayerItem, let currentItem = player?.currentItem, object == currentItem, let delegate = delegate else {
             return
         }
-        onMainThread {
+        onMainThreadAsync {
             switch notification.name {
             case .AVPlayerItemPlaybackStalled:
                 delegate.playerItemStalled(self, playerItem: currentItem)

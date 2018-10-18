@@ -37,7 +37,7 @@ public final class AVPlayerBasedCIImageRenderer: PlayerControllable {
             }
 
             playerItemObservations.append(playerItem.observe(\.status, options: [.new, .old]) { [weak self] (playerItem, changes) in
-                onMainThread {
+                onMainThreadAsync {
                     guard let self = self else {
                         return
                     }
@@ -50,7 +50,7 @@ public final class AVPlayerBasedCIImageRenderer: PlayerControllable {
             })
 
             playerItemObservations.append(playerItem.observe(\.loadedTimeRanges, options: [.new, .old]) { [weak self] (playerItem, changes) in
-                onMainThread {
+                onMainThreadAsync {
                     guard let self = self else {
                         return
                     }
@@ -59,7 +59,7 @@ public final class AVPlayerBasedCIImageRenderer: PlayerControllable {
             })
 
             playerItem.loadPreferredCGImagePropertyOrientation { [weak self] (success: Bool, preferredCGImagePropertyOrientation: Int32) -> Void in
-                onMainThread {
+                onMainThreadAsync {
                     guard let self = self else {
                         return
                     }
@@ -177,13 +177,13 @@ public final class AVPlayerBasedCIImageRenderer: PlayerControllable {
         displayLink?.isPaused = false
         player.seek(to: to, toleranceBefore: toleranceBefore, toleranceAfter: toleranceAfter) { [weak self] (success: Bool) -> Void in
             guard let self = self else {
-                onMainThread {
+                onMainThreadAsync {
                     completionHandler(success)
                 }
                 return
             }
             self.isSeeking = false
-            onMainThread {
+            onMainThreadAsync {
                 if success && self.isPlaying == false {
                     if let pixelBuffer: CVPixelBuffer = self.videoOutput.copyPixelBuffer(forItemTime: to, itemTimeForDisplay: nil) {
                         self.image = CIImage(cvPixelBuffer: pixelBuffer).oriented(forExifOrientation: self.preferredCGImagePropertyOrientation)
@@ -254,7 +254,7 @@ public final class AVPlayerBasedCIImageRenderer: PlayerControllable {
             guard let self = self else {
                 return
             }
-            onMainThread {
+            onMainThreadAsync {
                 self.delegate?.playerDidChangeRate(self)
             }
         })
@@ -262,7 +262,7 @@ public final class AVPlayerBasedCIImageRenderer: PlayerControllable {
             guard let self = self else {
                 return
             }
-            onMainThread {
+            onMainThreadAsync {
                 self.delegate?.playerDidChangeVolume(self)
             }
         })
@@ -304,7 +304,7 @@ public final class AVPlayerBasedCIImageRenderer: PlayerControllable {
         guard let object = notification.object as? AVPlayerItem, let currentItem = player.currentItem, object == currentItem, let delegate = delegate else {
             return
         }
-        onMainThread {
+        onMainThreadAsync {
             switch notification.name {
             case .AVPlayerItemPlaybackStalled:
                 delegate.playerItemStalled(self, playerItem: currentItem)

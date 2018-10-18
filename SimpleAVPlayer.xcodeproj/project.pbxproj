@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		EA1AAD7A2175D3B600757814 /* AVPlayerBasedCIImageRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1AAD792175D3B600757814 /* AVPlayerBasedCIImageRenderer.swift */; };
 		EA3C32FB1EA89A3A0097BBB3 /* AVPlayerItem+ loadPreferredCGImagePropertyOrientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3C32F91EA89A3A0097BBB3 /* AVPlayerItem+ loadPreferredCGImagePropertyOrientation.swift */; };
-		EA3C32FC1EA89A3A0097BBB3 /* OnMainThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3C32FA1EA89A3A0097BBB3 /* OnMainThread.swift */; };
+		EA3C32FC1EA89A3A0097BBB3 /* MainThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3C32FA1EA89A3A0097BBB3 /* MainThread.swift */; };
 		EA61FF341EA8962100CD2CC9 /* SimpleAVPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = EA61FF321EA8962100CD2CC9 /* SimpleAVPlayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EA61FF461EA897A700CD2CC9 /* PlayerControlInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA61FF451EA897A700CD2CC9 /* PlayerControlInterface.swift */; };
 		EA61FF481EA897AE00CD2CC9 /* AVPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA61FF471EA897AE00CD2CC9 /* AVPlayerView.swift */; };
@@ -18,7 +18,7 @@
 /* Begin PBXFileReference section */
 		EA1AAD792175D3B600757814 /* AVPlayerBasedCIImageRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVPlayerBasedCIImageRenderer.swift; sourceTree = "<group>"; };
 		EA3C32F91EA89A3A0097BBB3 /* AVPlayerItem+ loadPreferredCGImagePropertyOrientation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVPlayerItem+ loadPreferredCGImagePropertyOrientation.swift"; sourceTree = "<group>"; };
-		EA3C32FA1EA89A3A0097BBB3 /* OnMainThread.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnMainThread.swift; sourceTree = "<group>"; };
+		EA3C32FA1EA89A3A0097BBB3 /* MainThread.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainThread.swift; sourceTree = "<group>"; };
 		EA61FF2F1EA8962100CD2CC9 /* SimpleAVPlayer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SimpleAVPlayer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA61FF321EA8962100CD2CC9 /* SimpleAVPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleAVPlayer.h; sourceTree = "<group>"; };
 		EA61FF331EA8962100CD2CC9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -44,7 +44,7 @@
 		EA3C32F81EA89A3A0097BBB3 /* internal */ = {
 			isa = PBXGroup;
 			children = (
-				EA3C32FA1EA89A3A0097BBB3 /* OnMainThread.swift */,
+				EA3C32FA1EA89A3A0097BBB3 /* MainThread.swift */,
 				EA3C32F91EA89A3A0097BBB3 /* AVPlayerItem+ loadPreferredCGImagePropertyOrientation.swift */,
 			);
 			path = internal;
@@ -201,7 +201,7 @@
 				EA61FF481EA897AE00CD2CC9 /* AVPlayerView.swift in Sources */,
 				EA1AAD7A2175D3B600757814 /* AVPlayerBasedCIImageRenderer.swift in Sources */,
 				EA3C32FB1EA89A3A0097BBB3 /* AVPlayerItem+ loadPreferredCGImagePropertyOrientation.swift in Sources */,
-				EA3C32FC1EA89A3A0097BBB3 /* OnMainThread.swift in Sources */,
+				EA3C32FC1EA89A3A0097BBB3 /* MainThread.swift in Sources */,
 				EA61FF461EA897A700CD2CC9 /* PlayerControlInterface.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
