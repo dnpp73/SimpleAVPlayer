@@ -119,26 +119,14 @@ public final class AVPlayerView: UIView, PlayerControllable {
 
     public private(set) var isSeeking: Bool = false
 
-    public func seek(to: CMTime) {
-        seek(to: to, toleranceBefore: .positiveInfinity, toleranceAfter: .positiveInfinity) { _ in }
-    }
-
-    public func seek(to: CMTime, completionHandler: @escaping (Bool) -> Void) {
-        seek(to: to, toleranceBefore: .positiveInfinity, toleranceAfter: .positiveInfinity, completionHandler: completionHandler)
-    }
-
-    public func seek(to: CMTime, toleranceBefore: CMTime, toleranceAfter: CMTime) {
-        seek(to: to, toleranceBefore: toleranceBefore, toleranceAfter: toleranceAfter) { _ in }
-    }
-
-    public func seek(to: CMTime, toleranceBefore: CMTime, toleranceAfter: CMTime, completionHandler: @escaping (Bool) -> Void) {
+    public func seek(to: CMTime, toleranceBefore: CMTime = .positiveInfinity, toleranceAfter: CMTime = .positiveInfinity, force: Bool = false, completionHandler: ((Bool) -> Void)? = nil) {
         guard let player = player else {
-            completionHandler(false)
+            completionHandler?(false)
             delegate?.playerDidFailSeeking(self)
             return
         }
-        if isSeeking {
-            completionHandler(false)
+        if !force && isSeeking {
+            completionHandler?(false)
             delegate?.playerDidFailSeeking(self)
             return
         }
@@ -147,13 +135,13 @@ public final class AVPlayerView: UIView, PlayerControllable {
         player.seek(to: to, toleranceBefore: toleranceBefore, toleranceAfter: toleranceAfter) { [weak self] (success: Bool) -> Void in
             guard let self = self, let delegate = self.delegate else {
                 onMainThreadAsync {
-                    completionHandler(success)
+                    completionHandler?(success)
                 }
                 return
             }
             self.isSeeking = false
             onMainThreadAsync {
-                completionHandler(success)
+                completionHandler?(success)
                 if success {
                     delegate.playerDidFinishSeeking(self)
                 } else {
