@@ -102,7 +102,7 @@ public final class AVPlayerBasedCIImageRenderer: PlayerControllable {
             return
         }
         let displayLink = CADisplayLink(target: self, selector: #selector(self.displayLinkCallback(_:)))
-        displayLink.add(to: .current, forMode: .common)
+        displayLink.add(to: .main, forMode: .common) // いつも忘れるけど .main に .default の指定をするとスクロール中とかで止まるよ。
         displayLink.isPaused = false
         // displayLink.frameInterval = 60 // これをやると 1 Hz になる
         self.displayLink = displayLink
