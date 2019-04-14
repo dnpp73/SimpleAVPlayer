@@ -23,7 +23,7 @@ internal extension AVPlayerItem {
         }
     }
 
-    internal func loadPreferredCGImagePropertyOrientation(completion: @escaping (Bool, Int32) -> Void) {
+    func loadPreferredCGImagePropertyOrientation(completion: @escaping (Bool, Int32) -> Void) {
         loadPreferredTransform { (success: Bool, preferredTransform: CGAffineTransform) -> Void in
             guard success else {
                 completion(false, 1)
