@@ -1,6 +1,9 @@
 SimpleAVPlayer
 ===========
 
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat-square)](https://github.com/Carthage/Carthage)
+[![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-4BC51D.svg?style=flat-square)](https://github.com/apple/swift-package-manager)
+
 
 ## ToDo
 
@@ -41,7 +44,7 @@ carthage bootstrap --no-use-binaries --platform iOS
 
 ### See `Interface.swift`
 
-- [`PlayerControlInterface.swift`](/SimpleAVPlayer/PlayerControlInterface.swift)
+- [`PlayerControlInterface.swift`](/Sources/PlayerControlInterface.swift)
 
 
 ## License

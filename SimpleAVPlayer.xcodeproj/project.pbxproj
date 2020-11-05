@@ -16,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		19E52A3725544FFE00290ADF /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		EA1AAD792175D3B600757814 /* AVPlayerBasedCIImageRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVPlayerBasedCIImageRenderer.swift; sourceTree = "<group>"; };
 		EA3C32F91EA89A3A0097BBB3 /* AVPlayerItem+ loadPreferredCGImagePropertyOrientation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVPlayerItem+ loadPreferredCGImagePropertyOrientation.swift"; sourceTree = "<group>"; };
 		EA3C32FA1EA89A3A0097BBB3 /* MainThread.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainThread.swift; sourceTree = "<group>"; };
@@ -41,6 +42,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		19E52A3525544FAE00290ADF /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				EA3C32F81EA89A3A0097BBB3 /* internal */,
+				EA61FF451EA897A700CD2CC9 /* PlayerControlInterface.swift */,
+				EA61FF471EA897AE00CD2CC9 /* AVPlayerView.swift */,
+				EA1AAD792175D3B600757814 /* AVPlayerBasedCIImageRenderer.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
 		EA3C32F81EA89A3A0097BBB3 /* internal */ = {
 			isa = PBXGroup;
 			children = (
@@ -53,8 +65,10 @@
 		EA61FF251EA8962100CD2CC9 = {
 			isa = PBXGroup;
 			children = (
+				19E52A3725544FFE00290ADF /* Package.swift */,
 				EA61FF3C1EA896E400CD2CC9 /* dotfiles */,
 				EA61FF3B1EA896DE00CD2CC9 /* Documentation */,
+				19E52A3525544FAE00290ADF /* Sources */,
 				EA61FF311EA8962100CD2CC9 /* SimpleAVPlayer */,
 				EA61FF301EA8962100CD2CC9 /* Products */,
 			);
@@ -71,10 +85,6 @@
 		EA61FF311EA8962100CD2CC9 /* SimpleAVPlayer */ = {
 			isa = PBXGroup;
 			children = (
-				EA3C32F81EA89A3A0097BBB3 /* internal */,
-				EA61FF451EA897A700CD2CC9 /* PlayerControlInterface.swift */,
-				EA61FF471EA897AE00CD2CC9 /* AVPlayerView.swift */,
-				EA1AAD792175D3B600757814 /* AVPlayerBasedCIImageRenderer.swift */,
 				EA61FF321EA8962100CD2CC9 /* SimpleAVPlayer.h */,
 				EA61FF331EA8962100CD2CC9 /* Info.plist */,
 			);
@@ -138,7 +148,7 @@
 		EA61FF261EA8962100CD2CC9 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1210;
 				ORGANIZATIONNAME = dnpp.org;
 				TargetAttributes = {
 					EA61FF2E1EA8962100CD2CC9 = {
@@ -236,6 +246,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -260,7 +271,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -299,6 +310,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -317,7 +329,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -338,10 +350,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = SimpleAVPlayer/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -364,10 +373,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = SimpleAVPlayer/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (

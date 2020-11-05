@@ -65,6 +65,7 @@ force_cast: error
 force_try:
   severity: error
 included:
+  - Sources
   - SimpleAVPlayer
 excluded:
   - Carthage
