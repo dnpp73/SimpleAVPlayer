@@ -2,7 +2,7 @@ import Foundation
 import AVFoundation
 import CoreImage
 
-public protocol ImageRendererDelegate: class {
+public protocol ImageRendererDelegate: AnyObject {
     func imageRendererDidUpdateImage(_ renderer: AVPlayerBasedCIImageRenderer)
 }
 
