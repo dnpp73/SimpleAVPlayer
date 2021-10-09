@@ -125,7 +125,7 @@ public final class AVPlayerBasedCIImageRenderer: PlayerControllable {
 
     public var rate: Float {
         get {
-            return player.rate
+            player.rate
         }
         set {
             if newValue == 0.0 {
@@ -200,7 +200,7 @@ public final class AVPlayerBasedCIImageRenderer: PlayerControllable {
 
     public var volume: Float {
         get {
-            return player.volume
+            player.volume
         }
         set {
             player.volume = newValue

@@ -156,7 +156,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
             return []
         }
         return loadedTimeRangeValues.map { (loadedTimeRangeValue: NSValue) -> CMTimeRange in
-            return loadedTimeRangeValue.timeRangeValue
+            loadedTimeRangeValue.timeRangeValue
         }
     }
 
@@ -205,7 +205,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
     // MARK: - AVPlayerLayer
 
     override public class var layerClass: AnyClass {
-        return AVPlayerLayer.self
+        AVPlayerLayer.self
     }
 
     private var playerLayer: AVPlayerLayer {
@@ -217,7 +217,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
 
     private var player: AVPlayer? {
         get {
-            return playerLayer.player
+            playerLayer.player
         }
         set {
             playerLayer.player = newValue
@@ -226,7 +226,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
 
     // MARK: - Private Vars
 
-    private let output = AVPlayerItemVideoOutput(pixelBufferAttributes: Dictionary<String, AnyObject>())
+    private let output = AVPlayerItemVideoOutput(pixelBufferAttributes: [String: AnyObject]())
 
     private var timeObserver: AnyObject?
     private var playerItemObservations: [NSKeyValueObservation] = []
@@ -239,7 +239,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
         cleanupPlayer()
     }
 
-    required public init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupAVPlayer()
         setupAVPlayerItemNotifications()
@@ -297,7 +297,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
 
     // MARK: - UIView
 
-    public override var contentMode: UIView.ContentMode {
+    override public var contentMode: UIView.ContentMode {
         didSet {
             let videoGravity: AVLayerVideoGravity
             switch contentMode {
