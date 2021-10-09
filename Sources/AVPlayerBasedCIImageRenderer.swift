@@ -68,13 +68,15 @@ public final class AVPlayerBasedCIImageRenderer: PlayerControllable {
                     self.player.replaceCurrentItem(with: playerItem)
                     playerItem.add(self.videoOutput)
 
-                    #warning("maybe AVAssetImageGenerator only local URL. should be fail when remote streaming URL.")
-                    #warning("There is Color difference between videoOutput.copyPixelBuffer and AVAssetImageGenerator.copyCGImage. I guess it is Color Management problem...")
+                    // MEMO:
+                    // maybe AVAssetImageGenerator only local URL. should be fail when remote streaming URL.
+                    // There is Color difference between videoOutput.copyPixelBuffer and AVAssetImageGenerator.copyCGImage. I guess it is Color Management problem ...
                     let cgImage = try? AVAssetImageGenerator(asset: playerItem.asset).copyCGImage(at: .zero, actualTime: nil)
                     if let cgImage = cgImage {
                         self.image = CIImage(cgImage: cgImage).oriented(forExifOrientation: self.preferredCGImagePropertyOrientation)
                     }
-                    #warning("magical DispatchQueue.main.asyncAfter")
+
+                    // MEMO: magical DispatchQueue.main.asyncAfter ...
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         if self.isPlaying == false && self.isSeeking == false {
                             self.seek(to: .zero, toleranceBefore: .zero, toleranceAfter: .zero)
