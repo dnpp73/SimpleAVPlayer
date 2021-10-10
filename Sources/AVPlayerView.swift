@@ -1,3 +1,5 @@
+#if canImport(UIKit)
+
 import UIKit
 import AVFoundation
 
@@ -355,3 +357,5 @@ public final class AVPlayerView: UIView, PlayerControllable {
     }
 
 }
+
+#endif

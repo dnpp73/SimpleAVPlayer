@@ -1,3 +1,6 @@
+// UIKit 依存はないが CADisplayLink が Mac では利用できず、 CVDisplayLink を使わないといけないため。
+#if canImport(UIKit)
+
 import Foundation
 import AVFoundation
 import CoreImage
@@ -338,3 +341,5 @@ public final class AVPlayerBasedCIImageRenderer: PlayerControllable {
     }
 
 }
+
+#endif

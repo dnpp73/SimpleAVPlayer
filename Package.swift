@@ -6,6 +6,7 @@ let package = Package(
     name: "SimpleAVPlayer",
     platforms: [
         .iOS(.v12),
+        .macOS(.v10_11),
     ],
     products: [
         .library(name: "SimpleAVPlayer", targets: ["SimpleAVPlayer"]),
