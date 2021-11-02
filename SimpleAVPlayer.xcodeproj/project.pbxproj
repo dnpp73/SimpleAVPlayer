@@ -200,7 +200,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint autocorrect\n    swiftlint\nelif [ -x /opt/homebrew/bin/swiftlint ]; then\n    /opt/homebrew/bin/swiftlint autocorrect\n    /opt/homebrew/bin/swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint --fix\n    swiftlint\nelif [ -x /opt/homebrew/bin/swiftlint ]; then\n    /opt/homebrew/bin/swiftlint --fix\n    /opt/homebrew/bin/swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
