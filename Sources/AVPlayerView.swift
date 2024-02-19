@@ -238,7 +238,9 @@ public final class AVPlayerView: UIView, PlayerControllable {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
-        cleanupPlayer()
+        Task {
+            await cleanupPlayer()
+        }
     }
 
     public required init?(coder aDecoder: NSCoder) {

@@ -1,6 +1,7 @@
 import Foundation
 import AVFoundation
 
+@MainActor
 public protocol PlayerControllable: AnyObject {
     var delegate: PlayerControlDelegate? { get set }
 
@@ -23,6 +24,7 @@ public protocol PlayerControllable: AnyObject {
     var volume: Float { get set }
 }
 
+@MainActor
 public protocol PlayerControlDelegate: AnyObject {
     func playerItemDidChangeStatus(_ player: PlayerControllable, playerItem: AVPlayerItem)
     func playerItemDidChangeLoadedTimeRanges(_ player: PlayerControllable, playerItem: AVPlayerItem)

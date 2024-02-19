@@ -39,7 +39,7 @@ internal extension AVPlayerItem {
             case  90: preferredCGImagePropertyOrientation = 6 // Right, top
             case 180: preferredCGImagePropertyOrientation = 3 // Bottom, right
             case -90: preferredCGImagePropertyOrientation = 8 // Left, Bottom
-            default : preferredCGImagePropertyOrientation = 1
+            default:  preferredCGImagePropertyOrientation = 1
             }
 
             // print("radians: \(radians), degrees: \(degrees), orientation: \(preferredCGImagePropertyOrientation)")

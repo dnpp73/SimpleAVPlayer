@@ -9,6 +9,7 @@ public protocol ImageRendererDelegate: AnyObject {
     func imageRendererDidUpdateImage(_ renderer: AVPlayerBasedCIImageRenderer)
 }
 
+@MainActor
 public final class AVPlayerBasedCIImageRenderer: PlayerControllable {
 
     public weak var delegate: PlayerControlDelegate?
@@ -231,7 +232,9 @@ public final class AVPlayerBasedCIImageRenderer: PlayerControllable {
     // MARK: - Initializer
 
     deinit {
-        cleanupPlayer() // なんとなく displayLink を止めてからにしておく
+        Task {
+            await cleanupPlayer() // なんとなく displayLink を止めてからにしておく
+        }
         NotificationCenter.default.removeObserver(self)
     }
 

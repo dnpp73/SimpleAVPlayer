@@ -5,8 +5,8 @@ import PackageDescription
 let package = Package(
     name: "SimpleAVPlayer",
     platforms: [
-        .iOS(.v12),
-        .macOS(.v10_11),
+        .iOS(.v15),
+        .macOS(.v12),
     ],
     products: [
         .library(name: "SimpleAVPlayer", targets: ["SimpleAVPlayer"]),
