@@ -121,7 +121,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
 
     public private(set) var isSeeking: Bool = false
 
-    public func seek(to: CMTime, toleranceBefore: CMTime = .positiveInfinity, toleranceAfter: CMTime = .positiveInfinity, force: Bool = false, completionHandler: (@Sendable (Bool) -> Void)? = nil) {
+    public func seek(to: CMTime, toleranceBefore: CMTime = .positiveInfinity, toleranceAfter: CMTime = .positiveInfinity, force: Bool = false, completionHandler: (@Sendable @MainActor (Bool) -> Void)? = nil) {
         guard let player = player else {
             completionHandler?(false)
             delegate?.playerDidFailSeeking(self)
@@ -234,8 +234,8 @@ public final class AVPlayerView: UIView, PlayerControllable {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
-        Task.detached { @MainActor in
-            self.cleanupPlayer()
+        Task {
+            await cleanupPlayer()
         }
     }
 

@@ -154,7 +154,7 @@ public final class AVPlayerBasedCIImageRenderer: PlayerControllable {
 
     public private(set) var isSeeking: Bool = false
 
-    public func seek(to: CMTime, toleranceBefore: CMTime = .positiveInfinity, toleranceAfter: CMTime = .positiveInfinity, force: Bool = false, completionHandler: (@Sendable (Bool) -> Void)? = nil) {
+    public func seek(to: CMTime, toleranceBefore: CMTime = .positiveInfinity, toleranceAfter: CMTime = .positiveInfinity, force: Bool = false, completionHandler: (@Sendable @MainActor (Bool) -> Void)? = nil) {
         if !force && isSeeking {
             completionHandler?(false)
             delegate?.playerDidFailSeeking(self)
@@ -223,8 +223,8 @@ public final class AVPlayerBasedCIImageRenderer: PlayerControllable {
     // MARK: - Initializer
 
     deinit {
-        Task.detached { @MainActor in
-            self.cleanupPlayer() // なんとなく displayLink を止めてからにしておく
+        Task {
+            await cleanupPlayer() // なんとなく displayLink を止めてからにしておく
         }
         NotificationCenter.default.removeObserver(self)
     }
