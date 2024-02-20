@@ -1,6 +1,8 @@
 import Foundation
 import AVFoundation
 
+extension AVPlayerItem: @unchecked Sendable {}
+
 internal extension AVPlayerItem {
 
     private func loadPreferredTransform(completion: @escaping (Bool, CGAffineTransform) -> Void) {

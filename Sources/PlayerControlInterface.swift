@@ -17,7 +17,7 @@ public protocol PlayerControllable: AnyObject {
     var duration: CMTime { get }
 
     var isSeeking: Bool { get }
-    func seek(to: CMTime, toleranceBefore: CMTime, toleranceAfter: CMTime, force: Bool, completionHandler: ((Bool) -> Void)?)
+    func seek(to: CMTime, toleranceBefore: CMTime, toleranceAfter: CMTime, force: Bool, completionHandler: (@Sendable (Bool) -> Void)?)
 
     var loadedTimeRanges: [CMTimeRange] { get }
 

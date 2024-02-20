@@ -42,10 +42,10 @@ public final class AVPlayerView: UIView, PlayerControllable {
 
                 self.preferredCGImagePropertyOrientation = preferredCGImagePropertyOrientation
 
-                self.playerItemObservations.append(playerItem.observe(\.status, options: [.new, .old]) { [weak self] (playerItem, changes) in
-                    onMainThreadAsync {
-                        if let s = self, let d = s.delegate {
-                            d.playerItemDidChangeStatus(s, playerItem: playerItem)
+                self.playerItemObservations.append(playerItem.observe(\.status, options: [.new, .old]) { [unowned self] (playerItem, changes) in
+                    Task.detached { @MainActor in
+                        if let delegate = self.delegate {
+                            delegate.playerItemDidChangeStatus(self, playerItem: playerItem)
                         }
                     }
                 })
@@ -54,10 +54,10 @@ public final class AVPlayerView: UIView, PlayerControllable {
                     // print("[KVO PlayerItem] playbackLikelyToKeepUp")
                 }))
                  */
-                self.playerItemObservations.append(playerItem.observe(\.loadedTimeRanges, options: [.new, .old]) { [weak self] (playerItem, changes) in
-                    onMainThreadAsync {
-                        if let s = self, let d = s.delegate {
-                            d.playerItemDidChangeLoadedTimeRanges(s, playerItem: playerItem)
+                self.playerItemObservations.append(playerItem.observe(\.loadedTimeRanges, options: [.new, .old]) { [unowned self] (playerItem, changes) in
+                    Task.detached { @MainActor in
+                        if let delegate = self.delegate {
+                            delegate.playerItemDidChangeLoadedTimeRanges(self, playerItem: playerItem)
                         }
                     }
                 })
@@ -121,7 +121,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
 
     public private(set) var isSeeking: Bool = false
 
-    public func seek(to: CMTime, toleranceBefore: CMTime = .positiveInfinity, toleranceAfter: CMTime = .positiveInfinity, force: Bool = false, completionHandler: ((Bool) -> Void)? = nil) {
+    public func seek(to: CMTime, toleranceBefore: CMTime = .positiveInfinity, toleranceAfter: CMTime = .positiveInfinity, force: Bool = false, completionHandler: (@Sendable (Bool) -> Void)? = nil) {
         guard let player = player else {
             completionHandler?(false)
             delegate?.playerDidFailSeeking(self)
@@ -134,20 +134,16 @@ public final class AVPlayerView: UIView, PlayerControllable {
         }
         // ドキュメントによると kCMTimePositiveInfinity を放り込めば単純に seek(to:) と同じらしい。
         isSeeking = true
-        player.seek(to: to, toleranceBefore: toleranceBefore, toleranceAfter: toleranceAfter) { [weak self] (success: Bool) -> Void in
-            guard let self = self, let delegate = self.delegate else {
-                onMainThreadAsync {
-                    completionHandler?(success)
-                }
-                return
-            }
-            self.isSeeking = false
-            onMainThreadAsync {
+        player.seek(to: to, toleranceBefore: toleranceBefore, toleranceAfter: toleranceAfter) { [unowned self] (success: Bool) -> Void in
+            Task.detached { @MainActor in
+                self.isSeeking = false
                 completionHandler?(success)
-                if success {
-                    delegate.playerDidFinishSeeking(self)
-                } else {
-                    delegate.playerDidFailSeeking(self)
+                if let delegate = self.delegate {
+                    if success {
+                        delegate.playerDidFinishSeeking(self)
+                    } else {
+                        delegate.playerDidFailSeeking(self)
+                    }
                 }
             }
         }
@@ -238,8 +234,8 @@ public final class AVPlayerView: UIView, PlayerControllable {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
-        Task {
-            await cleanupPlayer()
+        Task.detached { @MainActor in
+            self.cleanupPlayer()
         }
     }
 
@@ -260,22 +256,24 @@ public final class AVPlayerView: UIView, PlayerControllable {
             return
         }
         let player = AVPlayer()
-        playerObservations.append(player.observe(\.rate, options: [.new, .old]) { [weak self] (player, changes) in
-            if let s = self, let d = s.delegate {
-                onMainThreadAsync {
-                    d.playerDidChangeRate(s)
+        playerObservations.append(player.observe(\.rate, options: [.new, .old]) { [unowned self] (player, changes) in
+            Task.detached { @MainActor in
+                if let delegate = self.delegate {
+                    delegate.playerDidChangeRate(self)
                 }
             }
         })
-        playerObservations.append(player.observe(\.volume, options: [.new, .old]) { [weak self] (player, changes) in
-            if let s = self, let d = s.delegate {
-                onMainThreadAsync {
-                    d.playerDidChangeVolume(s)
+        playerObservations.append(player.observe(\.volume, options: [.new, .old]) { [unowned self] (player, changes) in
+            Task.detached { @MainActor in
+                if let delegate = self.delegate {
+                    delegate.playerDidChangeVolume(self)
                 }
             }
         })
         timeObserver = player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.2, preferredTimescale: Int32(NSEC_PER_SEC)), queue: DispatchQueue.main) { [unowned self] (time: CMTime) -> Void in
-            self.playerDidChangePlayTimePeriodic()
+            Task.detached { @MainActor in
+                self.playerDidChangePlayTimePeriodic()
+            }
         } as AnyObject?
         player.allowsExternalPlayback = true
         player.usesExternalPlaybackWhileExternalScreenIsActive = true
@@ -339,7 +337,7 @@ public final class AVPlayerView: UIView, PlayerControllable {
         guard let object = notification.object as? AVPlayerItem, let currentItem = player?.currentItem, object == currentItem, let delegate = delegate else {
             return
         }
-        onMainThreadAsync {
+        Task.detached { @MainActor in
             switch notification.name {
             case .AVPlayerItemPlaybackStalled:
                 delegate.playerItemStalled(self, playerItem: currentItem)
