@@ -223,9 +223,13 @@ public final class AVPlayerBasedCIImageRenderer: PlayerControllable {
     // MARK: - Initializer
 
     deinit {
-        Task {
-            await cleanupPlayer() // なんとなく displayLink を止めてからにしておく
+        playerObservations.removeAll() // NSKeyValueObservation の deinit を発行させるだけで良い。
+        if let timeObserver = timeObserver {
+            player.removeTimeObserver(timeObserver)
+            self.timeObserver = nil
         }
+        playerItem = nil
+
         NotificationCenter.default.removeObserver(self)
     }
 
@@ -262,15 +266,6 @@ public final class AVPlayerBasedCIImageRenderer: PlayerControllable {
             // print("[KVO Player] externalPlaybackActive")
         })
         */
-    }
-
-    private func cleanupPlayer() {
-        playerObservations.removeAll() // NSKeyValueObservation の deinit を発行させるだけで良い。
-        if let timeObserver = timeObserver {
-            player.removeTimeObserver(timeObserver)
-            self.timeObserver = nil
-        }
-        playerItem = nil
     }
 
     // MARK: - Notification

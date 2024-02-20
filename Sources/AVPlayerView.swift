@@ -214,11 +214,8 @@ public final class AVPlayerView: UIView, PlayerControllable {
     }
 
     private var player: AVPlayer? {
-        get {
-            playerLayer.player
-        }
-        set {
-            playerLayer.player = newValue
+        didSet {
+            playerLayer.player = player
         }
     }
 
@@ -234,8 +231,11 @@ public final class AVPlayerView: UIView, PlayerControllable {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
-        Task {
-            await cleanupPlayer()
+
+        // cleanupPlayer()
+        playerObservations.removeAll() // NSKeyValueObservation の deinit を発行させるだけで良い。
+        if let player = player, let timeObserver = timeObserver {
+            player.removeTimeObserver(timeObserver)
         }
     }
 
@@ -283,18 +283,6 @@ public final class AVPlayerView: UIView, PlayerControllable {
         }))
          */
         self.player = player
-    }
-
-    private func cleanupPlayer() {
-        guard let player = player else {
-            return
-        }
-        playerObservations.removeAll() // NSKeyValueObservation の deinit を発行させるだけで良い。
-        if let timeObserver = timeObserver {
-            player.removeTimeObserver(timeObserver)
-        }
-        playerItem = nil
-        self.player = nil
     }
 
     // MARK: - UIView
